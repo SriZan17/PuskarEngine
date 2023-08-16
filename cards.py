@@ -1,6 +1,8 @@
 from itertools import combinations
 
-suits = ["Spades", "Diamonds", "Clubs", "Hearts"]
+players = 4
+
+suits = ["s", "d", "c", "h"]
 values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
 
 
@@ -91,11 +93,15 @@ comb = combinations(deck, 3)
 combi = list(comb)
 
 # Taking inputs from user
-players = int(input("Enter no. of players besides you\n"))
 hand = []
-for i in range(0, 3):
-    value = input("Enter the value of card\n")
-    suit = input("Enter the suit of card\n")
+ca = input("Enter the cards\n")
+car = ca.split(" ")
+for ca in car:
+    #value = input("Enter the value of card\n")
+    #suit = input("Enter the suit of card\n")
+    
+    suit = ca[-1]
+    value = ca[:-1]
     ca = Cards(value, suit)
     hand.append(ca)
 
@@ -252,10 +258,13 @@ while True:
     print(len(combi))
     win = ((w / len(combi)) ** players) * 100
     print(win)
-    nvalue = input("Enter the value of card to remove from play\n")
-    nsuit = input("Enter the suit of card to remove from play\n")
-    ca = Cards(nvalue, nsuit)
-    for j in combi:
-        for k in j:
-            if k.value == ca.value and k.suit == ca.suit:
-                combi.remove(j)
+    nca = input("Enter the cards to remove from play\n")
+    ncar = nca.split(" ")
+    for nca in ncar:
+        nsuit = nca[-1]
+        nvalue = nca[:-1]
+        nca = Cards(nvalue, nsuit)
+        for j in combi:
+            for k in j:
+                if k.value == nca.value and k.suit == nca.suit:
+                    combi.remove(j)
