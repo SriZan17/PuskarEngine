@@ -1,10 +1,193 @@
 from itertools import combinations
 
-players = 4
+def main():
+    total_players = 4
+    players = total_players-1
+    
+    suits = ["s", "d", "c", "h"]
+    values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+    deck = []
+    for suit in suits:
+        for value in values:
+            deck.append(Cards(value, suit))
 
-suits = ["s", "d", "c", "h"]
-values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+    hand = []
+    car = input("Enter the cards\n").split(",")
+    for ca in car:   
+        suit = ca[-1]
+        value = ca[:-1]
+        ca = Cards(value, suit)
+        hand.append(ca)
 
+    for i in hand:
+        for j in deck:
+            if i.value == j.value and i.suit == j.suit:
+                deck.remove(j)
+
+    # Calculating number of winning hands
+    while True:
+        w = 0
+        combi = list(combinations(deck, 3))
+        d = []
+        hand = SortCard(hand)
+        for i in hand:
+            d.append(int(i.value))
+            
+        if check_hand(hand) == "Trial":
+            for j in combi:
+                if check_hand(j) == "Trial":
+                    e = []
+                    for k in j:
+                        e.append(int(k.value))
+                    if d[2] > e[2]:
+                        w = w + 1
+                else:
+                    w = w + 1
+        elif check_hand(hand) == "Colorrun":
+            for j in combi:
+                e = []
+                if check_hand(j) == "Trial":
+                    w = w + 0
+                elif check_hand(j) == "Colorrun":
+                    for k in j:
+                        e.append(int(k.value))
+                        e.sort
+                    if d[2] > e[2]:
+                        w = w + 1
+                    elif d[2] == e[2]:
+                        if d[1] > e[1]:
+                            w = w + 1
+                        elif d[1] == e[1]:
+                            if d[0] > e[0]:
+                                w = w + 1
+                        else:
+                            w = w + 0
+                    else:
+                        w = w + 0
+                else:
+                    w = w + 1
+        elif check_hand(hand) == "Run":
+            for j in combi:
+                if check_hand(j) == "Trial" or check_hand(j) == "Colorrun":
+                    w = w + 0
+                elif check_hand(j) == "Run":
+                    e = []
+                    for k in j:
+                        e.append(int(k.value))
+                    e.sort
+                    if d[2] > e[2]:
+                        w = w + 1
+                    elif d[2] == e[2]:
+                        if d[1] > e[1]:
+                            w = w + 1
+                        elif d[1] == e[1]:
+                            if d[0] > e[0]:
+                                w = w + 1
+                else:
+                    w = w + 1
+        elif check_hand(hand) == "Color":
+            for j in combi:
+                if (
+                    check_hand(j) == "Trial"
+                    or check_hand(j) == "Colorrun"
+                    or check_hand(j) == "Run"
+                ):
+                    w = w + 0
+                elif check_hand(j) == "Color":
+                    e = []
+                    for k in j:
+                        e.append(int(k.value))
+                        e.sort
+                    if d[2] > e[2]:
+                        w = w + 1
+                    elif d[2] == e[2]:
+                        if d[1] > e[1]:
+                            w = w + 1
+                        elif d[1] == e[1]:
+                            if d[0] > e[0]:
+                                w = w + 1
+                else:
+                    w = w + 1
+        elif check_hand(hand) == "Pair":
+            for j in combi:
+                e = []
+                if (
+                    check_hand(j) == "Trial"
+                    or check_hand(j) == "Colorrun"
+                    or check_hand(j) == "Run"
+                    or check_hand(j) == "Color"
+                ):
+                    w = w + 0
+                elif check_hand(j) == "Pair":
+                    e = []
+                    for k in j:
+                        e.append(int(k.value))
+                        e.sort
+                    if d[0] == d[1]:
+                        if e[0] == e[1]:
+                            if d[0] > e[0]:
+                                w = w + 1
+                            elif d[0] == e[0]:
+                                if d[2] > e[2]:
+                                    w = w + 1
+                        elif e[1] == e[2]:
+                            if d[0] > e[1]:
+                                w = w + 1
+                            elif d[0] == e[1]:
+                                if d[2] > e[0]:
+                                    w = w + 1
+                    elif d[1] == d[2]:
+                        if e[0] == e[1]:
+                            if d[2] > e[0]:
+                                w = w + 1
+                            elif d[2] == e[0]:
+                                if d[0] > e[2]:
+                                    w = w + 1
+                        elif e[1] == e[2]:
+                            if d[2] > e[1]:
+                                w = w + 1
+                            elif d[2] == e[1]:
+                                if d[0] > e[0]:
+                                    w = w + 1
+                else:
+                    w = w + 1
+        elif check_hand(hand) == "Top":
+            for j in combi:
+                if check_hand(j) == "Top":
+                    e = []
+                    for k in j:
+                        e.append(int(k.value))
+                        e.sort
+                    if d[2] > e[2]:
+                        w = w + 1
+                    elif d[2] == e[2]:
+                        if d[1] > e[1]:
+                            w = w + 1
+                        elif d[1] == e[1]:
+                            if d[0] > e[0]:
+                                w = w + 1
+
+        print(check_hand(hand))
+        print(w)
+        print(len(combi))
+        win = ((w / len(combi)) ** players) * 100
+        print(win)
+        nca = input("Enter the cards to remove from play\n").split(",")
+        if nca == "n":
+            main()
+        
+        ncar = []
+        for nc in nca:
+            nsuit = nc[-1]
+            nvalue = nc[:-1]
+            ncar.append(Cards(nvalue, nsuit))
+            
+        for i in ncar:
+            for j in deck:
+                if i.value == j.value and i.suit == j.suit:
+                    deck.remove(j)
+                        
+            
 
 def check_trial(lis0):
     a = []
@@ -73,6 +256,10 @@ def check_hand(lis5):
     else:
         handtype1 = "Top"
         return handtype1
+    
+def SortCard(hand):
+    hand.sort(key=lambda x: x.value)
+    return hand
 
 
 class Cards:
@@ -82,189 +269,6 @@ class Cards:
 
     def card(self):
         return (value, suit)
-
-
-# Getting all possible combination of cards
-deck = []
-for suit in suits:
-    for value in values:
-        deck.append(Cards(value, suit))
-comb = combinations(deck, 3)
-combi = list(comb)
-
-# Taking inputs from user
-hand = []
-ca = input("Enter the cards\n")
-car = ca.split(" ")
-for ca in car:
-    #value = input("Enter the value of card\n")
-    #suit = input("Enter the suit of card\n")
     
-    suit = ca[-1]
-    value = ca[:-1]
-    ca = Cards(value, suit)
-    hand.append(ca)
-
-# Removing combinations which are impossible
-for i in hand:
-    for j in combi:
-        for k in j:
-            if k.value == i.value and k.suit == i.suit:
-                combi.remove(j)
-
-c = 0
-d = []
-for l in hand:
-    d.append(int(l.value))
-d.sort
-
-# Calculating number of winning hands
-while True:
-    w = 0
-    if check_hand(hand) == "Trial":
-        for j in combi:
-            if check_hand(j) == "Trial":
-                e = []
-                for k in j:
-                    e.append(int(k.value))
-                if d[2] > e[2]:
-                    w = w + 1
-                else:
-                    w = w + 0
-            else:
-                w = w + 1
-    elif check_hand(hand) == "Colorrun":
-        for j in combi:
-            e = [0]
-            if check_hand(j) == "Trial":
-                w = w + 0
-            elif check_hand(j) == "Colorrun":
-                for k in j:
-                    e.append(int(k.value))
-                    e.sort
-                if d[2] > e[2]:
-                    w = w + 1
-                elif d[2] == e[2]:
-                    if d[1] > e[1]:
-                        w = w + 1
-                    elif d[1] == e[1]:
-                        if d[0] > e[0]:
-                            w = w + 1
-            else:
-                w = w + 1
-    elif check_hand(hand) == "Run":
-        for j in combi:
-            if check_hand(j) == "Trial" or check_hand(j) == "Colorrun":
-                w = w + 0
-            elif check_hand(j) == "Run":
-                e = []
-                for k in j:
-                    e.append(int(k.value))
-                    e.sort
-                if d[2] > e[2]:
-                    w = w + 1
-                elif d[2] == e[2]:
-                    if d[1] > e[1]:
-                        w = w + 1
-                    elif d[1] == e[1]:
-                        if d[0] > e[0]:
-                            w = w + 1
-            else:
-                w = w + 1
-    elif check_hand(hand) == "Color":
-        for j in combi:
-            if (
-                check_hand(j) == "Trial"
-                or check_hand(j) == "Colorrun"
-                or check_hand(j) == "Run"
-            ):
-                w = w + 0
-            elif check_hand(j) == "Color":
-                e = []
-                for k in j:
-                    e.append(int(k.value))
-                    e.sort
-                if d[2] > e[2]:
-                    w = w + 1
-                elif d[2] == e[2]:
-                    if d[1] > e[1]:
-                        w = w + 1
-                    elif d[1] == e[1]:
-                        if d[0] > e[0]:
-                            w = w + 1
-            else:
-                w = w + 1
-    elif check_hand(hand) == "Pair":
-        for j in combi:
-            e = []
-            if (
-                check_hand(j) == "Trial"
-                or check_hand(j) == "Colorrun"
-                or check_hand(j) == "Run"
-                or check_hand(j) == "Color"
-            ):
-                w = w + 0
-            elif check_hand(j) == "Pair":
-                e = []
-                for k in j:
-                    e.append(int(k.value))
-                    e.sort
-                if d[0] == d[1]:
-                    if e[0] == e[1]:
-                        if d[0] > e[0]:
-                            w = w + 1
-                        elif d[0] == e[0]:
-                            if d[2] > e[2]:
-                                w = w + 1
-                    elif e[1] == e[2]:
-                        if d[0] > e[1]:
-                            w = w + 1
-                        elif d[0] == e[1]:
-                            if d[2] > e[0]:
-                                w = w + 1
-                elif d[1] == d[2]:
-                    if e[0] == e[1]:
-                        if d[2] > e[0]:
-                            w = w + 1
-                        elif d[2] == e[0]:
-                            if d[0] > e[2]:
-                                w = w + 1
-                    elif e[1] == e[2]:
-                        if d[2] > e[1]:
-                            w = w + 1
-                        elif d[2] == e[1]:
-                            if d[0] > e[0]:
-                                w = w + 1
-            else:
-                w = w + 1
-    elif check_hand(hand) == "Top":
-        for j in combi:
-            if check_hand(j) == "Top":
-                e = []
-                for k in j:
-                    e.append(int(k.value))
-                    e.sort
-                if d[2] > e[2]:
-                    w = w + 1
-                elif d[2] == e[2]:
-                    if d[1] > e[1]:
-                        w = w + 1
-                    elif d[1] == e[1]:
-                        if d[0] > e[0]:
-                            w = w + 1
-
-    print(check_hand(hand))
-    print(w)
-    print(len(combi))
-    win = ((w / len(combi)) ** players) * 100
-    print(win)
-    nca = input("Enter the cards to remove from play\n")
-    ncar = nca.split(" ")
-    for nca in ncar:
-        nsuit = nca[-1]
-        nvalue = nca[:-1]
-        nca = Cards(nvalue, nsuit)
-        for j in combi:
-            for k in j:
-                if k.value == nca.value and k.suit == nca.suit:
-                    combi.remove(j)
+if __name__ == "__main__":
+    main()
