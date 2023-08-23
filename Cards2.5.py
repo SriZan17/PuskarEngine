@@ -1,4 +1,5 @@
 from itertools import combinations
+import re
 
 def main():
     total_players = 4
@@ -12,7 +13,8 @@ def main():
             deck.append(Cards(value, suit))
 
     hand = []
-    car = input("Enter the cards\n").split(",")
+    caro = input("Enter the cards\n")
+    car = re.findall(r'\d*\D', caro)
     for ca in car:   
         suit = ca[-1]
         value = ca[:-1]
@@ -172,8 +174,9 @@ def main():
         print(len(combi))
         win = ((w / len(combi)) ** players) * 100
         print(win)
-        nca = input("Enter the cards to remove from play\n").split(",")
-        if nca == "n":
+        ncao = input("Enter the cards to remove from play\n")
+        nca = re.findall(r'\d*\D', ncao)
+        if nca == ["n"]:
             main()
         
         ncar = []
