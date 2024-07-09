@@ -1,18 +1,33 @@
 from itertools import combinations
+from typing import List
 
 
 def main():
-    total_players = int(input("Enter the number of players\n"))
-    players = total_players - 1
+    total_players: int = int(input("Enter the number of players\n"))
+    players: int = total_players - 1
 
-    suits = ["s", "d", "c", "h"]
-    values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
-    deck = []
+    suits: List = ["s", "d", "c", "h"]
+    values: List = [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+    ]
+    deck: List[Cards] = []
     for suit in suits:
         for value in values:
             deck.append(Cards(value, suit))
 
-    hand = []
+    hand: List[Cards] = []
 
     for i in range(0, 3):
         va = input("Enter the value of the card (2-14)\n")
@@ -26,9 +41,9 @@ def main():
 
     # Calculating number of winning hands
     while True:
-        w = 0
-        combi = list(combinations(deck, 3))
-        d = []
+        w: int = 0
+        combi: List = list(combinations(deck, 3))
+        d: List = []
         hand = SortCard(hand)
         for i in hand:
             d.append(int(i.value))
@@ -172,21 +187,14 @@ def main():
         print(len(combi))
         win = ((w / len(combi)) ** players) * 100
         print(win)
-        ncao = input("Enter the cards to remove from play\n")
-        nca = re.findall(r"\d*\D", ncao)
-        if nca == ["n"]:
+        nva = input("Enter the value of the card to remove from play\n")
+        nsu = input("Enter the suit of the card to remove from play\n")
+        if nva == ["n"]:
             main()
 
-        ncar = []
-        for nc in nca:
-            nsuit = nc[-1]
-            nvalue = nc[:-1]
-            ncar.append(Cards(nvalue, nsuit))
-
-        for i in ncar:
-            for j in deck:
-                if i.value == j.value and i.suit == j.suit:
-                    deck.remove(j)
+        for j in deck:
+            if nva == j.value and nsu == j.suit:
+                deck.remove(j)
 
 
 def check_trial(lis0):
